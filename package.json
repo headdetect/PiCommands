@@ -1,0 +1,10 @@
+{
+  "author": "headdetect",
+  "name": "PiCommands",
+  "description": "A small, lightweight, server to run commands on.",
+  "version": "0.0.1a",
+  "devDependencies": {
+    "ip": "*",
+    "mkdirp": "*"
+  }
+}
