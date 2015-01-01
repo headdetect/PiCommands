@@ -1,10 +1,10 @@
-var ip 		= require("ip"),
-	mkdirp  = require('mkdirp'),
-	fs      = require('fs'),
-	http    = require('http'),
+var ip      = require("ip"),
+    mkdirp  = require('mkdirp'),
+    fs      = require('fs'),
+    http    = require('http'),
     sys     = require('sys'),
-	exec    = require('child_process').exec,
-	readLn	= require('readline');
+    exec    = require('child_process').exec,
+    readLn  = require('readline');
 
 
 
