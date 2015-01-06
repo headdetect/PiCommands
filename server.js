@@ -3,7 +3,7 @@ var ip      = require("ip"),
     fs      = require('fs'),
     http    = require('http'),
     sys     = require('sys'),
-    exec    = require('child_process').exec,
+    shell   = require('shelljs/global'),
     readLn  = require('readline');
 
 
@@ -36,7 +36,13 @@ var commands =
 	    command : function() {
 	    	return "Yo";
 	    },
-	}
+	},
+    {
+        url : "/temperature",
+        command : function() {
+            return executeCommand("temperature -f");
+        }
+    }
 ];
 
 
@@ -64,14 +70,14 @@ function readStorage(onComplete) {
 function startServer() {
     readStorage(function() {
         http.createServer(function(request, result) {
-        	if(!request || !result) return;
-            for(var i = 0; i < storage.commands.length; i++) {
-                var command = storage.commands[i];
+        	if(!request || !result || request.url == "/favicon.ico") return;
+            console.log("=> " + request.url.toLowerCase());
 
-                console.log("=> " + request.url.toLowerCase());
+            for(var i = 0; i < commands.length; i++) {
+                var command = commands[i];
 
-                if(command.url.toLowerCase() === request.url.toLowerCase()) {
-                	console.log("Executing: \"" + command.name + "\"");
+                if(command.url.toLowerCase() == request.url.toLowerCase()) {
+                	console.log("Executing: \"" + command.url + "\"");
                     var output = command.command();
                     writeToOutput(result, output ? output : responseAsJson("ok"));
                     if (request)
@@ -91,17 +97,7 @@ function startServer() {
 
 
 function executeCommand(cmd) {
-    function puts(error, stdout, stderror) {
-        if (storage.options.logOutput) {
-            if (stdout)
-                console.log(stdout);
-            if (stderror)
-                console.error(stderror);
-        }
-        sys.puts(stdout);
-    }
-
-    exec(cmd, puts);
+    return exec(cmd).output;
 }
 
 function waitForClose() {
@@ -123,7 +119,6 @@ function writeToOutput(response, body) {
 function responseAsJson(response) {
 	return JSON.stringify({ "response": response });
 }
-
 
 startServer();
 waitForClose();
