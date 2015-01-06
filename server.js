@@ -79,14 +79,14 @@ function startServer() {
                 if(command.url.toLowerCase() == request.url.toLowerCase()) {
                 	console.log("Executing: \"" + command.url + "\"");
                     var output = command.command();
-                    writeToOutput(result, output ? output : responseAsJson("ok"));
+                    writeToOutput(result, output ? output : "ok");
                     if (request)
                         request.socket.end();
                     return;
                 }
             }
 
-        	writeToOutput(result, responseAsJson("no command found"));
+        	writeToOutput(result, "no command found");
             request.socket.end();
             
         }).listen(storage.options.port, storage.options.bind);
@@ -106,6 +106,7 @@ function waitForClose() {
 }
 
 function writeToOutput(response, body) {
+    body = responseAsJson(body);
 	response.writeHead(200, 
 		{
 			'Content-Length': body.length,
